@@ -1,5 +1,3 @@
-# fhir-storage-and-analytic-track
-
 # FHIR Storage & Analytics
 
 Submitting WG/Project/Implementer Group
