@@ -1,25 +1,22 @@
 # FHIR Storage, Query & Analytics
 
 Submitting WG/Project/Implementer Group - 
-No such group, should we create it?
-
+No such group, should we form it?
 
 
 ## Justification 
 
-More and more developers start design storage for FHIR data.
-Some start from existing schema, others wish to design for FHIR from beginning.
-This process a set of tradeoffs that will affect development process greatly.
-
-We hope this group/track will share experience and technologies for FHIR storage,
-as well as implenting analytics on FHIR dataset.
+More and more developers about to start design storage for FHIR data.
+Some starts from existing schema, others wish to design for FHIR from beginning.
+We hope this group/track will share experience about FHIR storage implementation,
+as well as analytics on FHIR dataset.
 
 ## Topics
 
 * Build FHIR API on top of existing schema
 * Design generic FHIR storage
-
-
+* Feed FHIR data into analytical databases
+* Big Data Analytic
 
 ## Databases
 
