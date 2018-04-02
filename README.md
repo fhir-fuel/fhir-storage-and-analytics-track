@@ -55,6 +55,10 @@ as well as analytics on FHIR datasets.
 
 * prototype efficient graphql => sql transpilation
 
+### Discussion
+
+fhirpath implementation/subset for databases
+
 
 ## Assets
 
