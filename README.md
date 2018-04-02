@@ -26,7 +26,8 @@ as well as analytics on FHIR datasets.
 * Implement FHIR search for 
   * Patient by name, address
   * Encounter by date and location/practitioner
-  * Encounter _include patient/practitioner
+  * Encounter include patient/practitioner
+  * Encounter chained params
 * On fly convertion to FHIR if format is different
 
 ### Scenario 2: Advanced FHIR search
