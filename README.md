@@ -7,7 +7,7 @@ No such group, should we form it?
 ## Justification 
 
 More and more developers about to start design storage for FHIR data.
-Some starts from existing schema, others wish to design for FHIR from beginning.
+Some start from existing schema, others wish to design for FHIR from beginning.
 We hope this group/track will share experience about FHIR storage implementation,
 as well as analytics on FHIR dataset.
 
@@ -21,7 +21,7 @@ TODO
 * Build FHIR API on top of existing database
 * Design generic FHIR storage
 * Feed FHIR data into analytical databases
-* Big Data Analytic
+* Big Data Analytics
 
 ## Scenarios
 
