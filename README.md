@@ -11,6 +11,11 @@ Some starts from existing schema, others wish to design for FHIR from beginning.
 We hope this group/track will share experience about FHIR storage implementation,
 as well as analytics on FHIR dataset.
 
+## What i have to do to be part of it?
+
+TODO
+
+
 ## Topics
 
 * Build FHIR API on top of existing database
