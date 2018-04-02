@@ -13,7 +13,7 @@ as well as analytics on FHIR dataset.
 
 ## Topics
 
-* Build FHIR API on top of existing schema
+* Build FHIR API on top of existing database
 * Design generic FHIR storage
 * Feed FHIR data into analytical databases
 * Big Data Analytic
