@@ -19,9 +19,13 @@ TODO
 ## Topics
 
 * Build FHIR API on top of existing database
+  * on fly convertion data & queries
+  * intermidiate FHIR database (replication problem)
 * Design generic FHIR storage
+  * document oriented (json, xml, protobuf)
+  * relational
 * Feed FHIR data into analytical databases
-* Big Data Analytics
+  * transaction log for replication
 
 ## Scenarios
 
