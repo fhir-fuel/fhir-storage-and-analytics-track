@@ -9,7 +9,7 @@ No such group, should we form it?
 More and more developers about to start design storage for FHIR data.
 Some start from existing schema, others wish to design for FHIR from beginning.
 We hope this group/track will share experience about FHIR storage implementation,
-as well as analytics on FHIR dataset.
+as well as analytics on FHIR datasets.
 
 ## What i have to do to be part of it?
 
