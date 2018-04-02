@@ -1,25 +1,47 @@
-# FHIR Storage & Analytics
+# FHIR Storage, Query & Analytics
 
-Submitting WG/Project/Implementer Group
-Health Samurai
+Submitting WG/Project/Implementer Group - 
+No such group, should we create it?
 
-## Justification
 
-Choosing a storage for your FHIR implementation is like choosing a set of tradeoffs that will affect development process greatly. We want to share our experience of implementing FHIR services using relational databases and jsonb with FHIR Search API as an example. But sometimes fhir search is not enough - this is the case with reports, sophisticated business logic and analytics. For some cases complex SQL queries will suffice, but often the need to use special analytic tooling arises. We will show how one can implement integration of FHIR server and analytic database of choice.
 
-## FHIR transaction log
+## Justification 
 
-as a source of data for FHIR server replication for analytical databases
+More and more developers start design storage for FHIR data.
+Some start from existing schema, others wish to design for FHIR from beginning.
+This process a set of tradeoffs that will affect development process greatly.
+
+We hope this group/track will share experience and technologies for FHIR storage,
+as well as implenting analytics on FHIR dataset.
+
+## Topics
+
+* Build FHIR API on top of existing schema
+* Design generic FHIR storage
+
+
 
 ## Databases
 
+### Relational
+
 * PostgreSQL
-* Biq Query
+
+### Document databases
+
 * MongoDB
+
+### analytical
+
 * ElasitcSearch
 * ClickHouse
-* ????
+* Biq Query
 
-## Integration bus
+### Integration bus
 
 * Kafka
+
+
+## Participants
+
+* [Health Samurai](http://health-samur.ai)
