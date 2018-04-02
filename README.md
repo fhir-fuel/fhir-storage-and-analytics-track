@@ -23,6 +23,15 @@ TODO
 * Feed FHIR data into analytical databases
 * Big Data Analytic
 
+## Scenarios
+
+* Implement basic FHIR search functionality
+* Implement complex queries on FHIR resources
+* Implement FHIR server integration with analytic database
+
+
+
+
 ## Databases
 
 ### Relational
