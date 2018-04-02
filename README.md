@@ -42,7 +42,7 @@ TODO
 
 * MongoDB
 
-### analytical
+### Analytical
 
 * ElasitcSearch
 * ClickHouse
