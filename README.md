@@ -51,6 +51,10 @@ as well as analytics on FHIR datasets.
   * Relational databases (MS SQL, Oracle, Postgresql, Mysql)
 * Run analytical queries
 
+### Scenario 5: Graphql implementaton
+
+* prototype efficient graphql => sql transpilation
+
 
 ## Assets
 
