@@ -21,6 +21,8 @@ as well as analytics on FHIR datasets.
      * postgresql jsonb
      * mongodb
      * big query
+  * Graph databases
+     * neo4j
   * tripple store (datomic, EAV)
   * xml database (?)
 * Load sample data
@@ -59,6 +61,7 @@ as well as analytics on FHIR datasets.
 ### Discussion
 
 fhirpath implementation/subset for databases
+Current limitations of the FHIR Search API?
 
 
 ## Assets
