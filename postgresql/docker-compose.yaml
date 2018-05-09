@@ -1,0 +1,11 @@
+version: '3'
+services:
+  fhir_db:
+    image: aidbox/db:0.1
+    container_name: pg
+    ports:
+      - "5777:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: synthea
+      POSTGRES_PASSWORD: postgres
