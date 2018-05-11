@@ -107,7 +107,7 @@ from (
 limit 10
 ;
 
-
+---
 
 ---
 
@@ -115,28 +115,85 @@ limit 10
 -- "valueCodeableConcept"
 -- "race"
 
-update resource
-set resource = resource || jsonb_build_object('race',
-(
-  select ext->'valueCodeableConcept' from (
-    select jsonb_array_elements(resource->'extension') as ext
-  ) _
-  where ext->>'url' = 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'
-  limit 1
-)
-)
+update resource set resource = resource || jsonb_strip_nulls(jsonb_build_object(
+ 'race', (
+    select ext->'valueCodeableConcept' from (
+      select jsonb_array_elements(resource->'extension') as ext
+    ) _ where ext->>'url' = 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'
+    limit 1
+  )
+))
 where resource_type = 'Patient'
 
-
-
-
--- why ssn is extension 
 
 
 ---
-select id, resource#>'{name,0,given}',
-  resource#>'{race,coding,0,display}'
+-- update patient extensions
+
+with mappings (uri, tp, nm) as ( values
+  ('http://hl7.org/fhir/us/core/StructureDefinition/us-core-race', 'valueCodeableConcept', 'race'),
+  ('http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity', 'valueCodeableConcept','ethnicity'),
+  ('http://hl7.org/fhir/StructureDefinition/birthPlace', 'valueAddress','birthPlace'),
+  ('http://hl7.org/fhir/StructureDefinition/patient-mothersMaidenName', 'valueString','mothersMaidenName'),
+  ('http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex', 'valueCode', 'birthSex'),
+  ('http://hl7.org/fhir/StructureDefinition/patient-interpreterRequired', 'valueBoolean', 'interpreterRrequired'),
+  ('http://standardhealthrecord.org/fhir/StructureDefinition/shr-demographics-FathersName-extension', 'valueHumanName', 'fathersName'),
+  ('http://standardhealthrecord.org/fhir/StructureDefinition/shr-demographics-SocialSecurityNumber-extension', 'valueString', 'socialSecurityNumber')
+)
+
+update resource
+set resource = resource || 
+(
+  select jsonb_strip_nulls(ext_obj) FROM (
+    select jsonb_object_agg(m.nm, e.ext -> m.tp) as ext_obj from ( 
+      select jsonb_array_elements(resource->'extension') as ext
+    ) e, mappings m
+    where ext->>'url' = m.uri
+
+  ) _
+)
+where resource_type = 'Patient' 
+
+---
+-- why ssn is extension
+
+
+---
+select id,
+  resource#>'{name,0,given,0}',
+  resource#>'{race,coding,0,display}',
+  resource#>'{ethnicity,coding,0,display}',
+  resource->>'birthDate'
 from resource
 where resource_type = 'Patient'
-limit 10;
+limit 10
+;
 
+
+---
+select resource#>'{race,coding,0,display}' race,  count(*)
+from resource
+where resource_type = 'Patient'
+group by resource#>'{race,coding,0,display}'
+
+;
+
+---
+select jsonb_pretty(resource)
+from resource
+where resource_type = 'Patient'
+limit 10
+;
+---
+select jsonb_pretty(resource)
+from resource
+where resource_type = 'Practitioner'
+limit 10
+;
+
+---
+select jsonb_pretty(resource)
+from resource
+where resource_type = 'Organization'
+limit 10
+;
