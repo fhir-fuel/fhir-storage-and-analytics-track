@@ -33,6 +33,24 @@ CREATE TABLE IF NOT EXISTS resource (
 );
 
 
+
+---
+--res tables
+
+CREATE TABLE IF NOT EXISTS Observation (id text primary key, txid bigint not null, ts timestamptz DEFAULT current_timestamp, resource_type text, status resource_status not null, resource jsonb not null);
+CREATE TABLE IF NOT EXISTS Claim (id text primary key, txid bigint not null, ts timestamptz DEFAULT current_timestamp, resource_type text, status resource_status not null, resource jsonb not null);
+CREATE TABLE IF NOT EXISTS Encounter (id text primary key, txid bigint not null, ts timestamptz DEFAULT current_timestamp, resource_type text, status resource_status not null, resource jsonb not null);
+CREATE TABLE IF NOT EXISTS Immunization (id text primary key, txid bigint not null, ts timestamptz DEFAULT current_timestamp, resource_type text, status resource_status not null, resource jsonb not null);
+CREATE TABLE IF NOT EXISTS Procedure (id text primary key, txid bigint not null, ts timestamptz DEFAULT current_timestamp, resource_type text, status resource_status not null, resource jsonb not null);
+CREATE TABLE IF NOT EXISTS Condition (id text primary key, txid bigint not null, ts timestamptz DEFAULT current_timestamp, resource_type text, status resource_status not null, resource jsonb not null);
+CREATE TABLE IF NOT EXISTS MedicationRequest (id text primary key, txid bigint not null, ts timestamptz DEFAULT current_timestamp, resource_type text, status resource_status not null, resource jsonb not null);
+CREATE TABLE IF NOT EXISTS DiagnosticReport (id text primary key, txid bigint not null, ts timestamptz DEFAULT current_timestamp, resource_type text, status resource_status not null, resource jsonb not null);
+CREATE TABLE IF NOT EXISTS CarePlan (id text primary key, txid bigint not null, ts timestamptz DEFAULT current_timestamp, resource_type text, status resource_status not null, resource jsonb not null);
+CREATE TABLE IF NOT EXISTS Goal (id text primary key, txid bigint not null, ts timestamptz DEFAULT current_timestamp, resource_type text, status resource_status not null, resource jsonb not null);
+CREATE TABLE IF NOT EXISTS Patient (id text primary key, txid bigint not null, ts timestamptz DEFAULT current_timestamp, resource_type text, status resource_status not null, resource jsonb not null);
+CREATE TABLE IF NOT EXISTS Organization (id text primary key, txid bigint not null, ts timestamptz DEFAULT current_timestamp, resource_type text, status resource_status not null, resource jsonb not null);
+CREATE TABLE IF NOT EXISTS AllergyIntolerance (id text primary key, txid bigint not null, ts timestamptz DEFAULT current_timestamp, resource_type text, status resource_status not null, resource jsonb not null);
+
 ---
 
 \set record `cat synthea/Abbott701_Norman373_77.json`
@@ -197,3 +215,45 @@ from resource
 where resource_type = 'Organization'
 limit 10
 ;
+
+---
+
+-- fill the tables
+ truncate Observation;
+ truncate Claim;
+ truncate Encounter;
+ truncate Immunization;
+ truncate Procedure;
+ truncate Condition;
+ truncate MedicationRequest;
+ truncate DiagnosticReport;
+ truncate CarePlan;
+ truncate Goal;
+ truncate Patient;
+ truncate Organization;
+ truncate AllergyIntolerance;
+;
+
+
+INSERT INTO Observation select * from resource where resource_type = 'Observation';
+
+INSERT INTO Claim select * from resource where resource_type = 'Claim';
+INSERT INTO Encounter select * from resource where resource_type = 'Encounter';
+INSERT INTO Immunization select * from resource where resource_type = 'Immunization';
+INSERT INTO Procedure select * from resource where resource_type = 'Procedure';
+INSERT INTO Condition select * from resource where resource_type = 'Condition';
+INSERT INTO MedicationRequest select * from resource where resource_type = 'MedicationRequest';
+INSERT INTO DiagnosticReport select * from resource where resource_type = 'MedicationReport';
+INSERT INTO CarePlan select * from resource where resource_type = 'CarePlan';
+INSERT INTO Goal select * from resource where resource_type = 'Goal';
+INSERT INTO Patient select * from resource where resource_type = 'Patient';
+INSERT INTO Organization select * from resource where resource_type = 'Organization';
+INSERT INTO AllergyIntolerance select * from resource where resource_type = 'AllergyIntolerance';
+
+---
+
+\l
+
+\dt
+
+select * from patient limit 1;
