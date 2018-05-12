@@ -4,16 +4,18 @@
 
 
 THE WORLD'S MOST ADVANCED OPEN SOURCE RELATIONAL DATABASE
-which support binary JSON as datatype
+which supports binary JSON as datatype
 
-With PostgreSQL you can get both document jsonb storage & power of SQL + transactional
-guarantees.
+With PostgreSQL you can 
+get both flexibility of document jsonb storage 
+as well the power of SQL and transactional guarantees.
 
 
 
 ### Bootstrap
 
 You need docker-compose
+and psql installed locally 
 
 
 ```
