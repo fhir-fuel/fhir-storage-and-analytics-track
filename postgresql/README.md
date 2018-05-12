@@ -83,6 +83,8 @@ AND
 
 ```
 
+You can learn more about postgres jsonb capabilities [here](https://www.postgresql.org/docs/current/static/functions-json.html)
+
 ### Related resources
 
 How to represent references between resources
