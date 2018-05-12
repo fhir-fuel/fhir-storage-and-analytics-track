@@ -45,8 +45,13 @@ limit 5
 
 \i h.psql
 
-select :pp(resource->'value'), :pp(resource)
+select
+   resource#>'{value,Quantity,value}',
+   resource#>'{value,Quantity,unit}',
+   resource#>'{code,coding,0,display}'
 from observation
-where resource#>>'{value,Quantity}' is not null
+where
+resource#>>'{value,Quantity}' is not null
+and resource#>>'{code,coding,0,code}' = '49765-1'
 limit 10
 
