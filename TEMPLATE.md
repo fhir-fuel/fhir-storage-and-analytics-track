@@ -1,4 +1,4 @@
-## <My technology>
+## My technology
 
 ### Summary
 
