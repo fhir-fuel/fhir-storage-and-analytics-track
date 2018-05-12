@@ -1,0 +1,4 @@
+\set o 'jsonb_build_object'  
+\set a 'jsonb_build_array'  
+\set pp 'jsonb_pretty'
+\set keys 'jsonb_object_keys'

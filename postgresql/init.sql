@@ -236,7 +236,6 @@ limit 10
 
 
 INSERT INTO Observation select * from resource where resource_type = 'Observation';
-
 INSERT INTO Claim select * from resource where resource_type = 'Claim';
 INSERT INTO Encounter select * from resource where resource_type = 'Encounter';
 INSERT INTO Immunization select * from resource where resource_type = 'Immunization';
@@ -252,8 +251,83 @@ INSERT INTO AllergyIntolerance select * from resource where resource_type = 'All
 
 ---
 
-\l
+-- select resource from patient limit 1;
 
-\dt
+select k, count(*) from (
+  select jsonb_object_keys(resource) as k
+  from observation
+) _
+group by k
 
-select * from patient limit 1;
+---
+-- fix polymorphic
+
+update observation
+set resource = resource || jsonb_build_object(
+  'value', jsonb_strip_nulls(jsonb_build_object(
+    'string', resource->'valueString',
+    'CodeableConcept', resource->'valueCodeableConcept',
+    'Quantity', resource->'valueQuantity')))
+    ;
+
+---
+select
+jsonb_pretty(resource->'value'),
+jsonb_pretty(resource->'subject')
+from observation
+limit 5
+;
+
+---
+
+select jsonb_pretty(resource)
+from patient
+limit 1
+;
+
+---
+
+select jsonb_pretty(resource)
+from encounter
+limit 1
+;
+
+---
+
+\i h.psql
+select :pp(resource)
+from organization
+limit 1
+;
+
+---
+
+\i h.psql
+
+select distinct :keys(resource) k
+from patient
+;
+
+---
+select distinct jsonb_object_keys(resource) k
+from encounter
+;
+
+---
+\i h.psql
+select distinct :keys(resource) k
+from CarePlan
+;
+
+
+---
+
+select 'select * from ' || rt || ' limit 1'
+from (
+  select distinct resource_type as rt
+  from resource
+) _
+\gexec
+
+
+---
