@@ -59,7 +59,7 @@ incurring any cost: https://cloud.google.com/bigquery/docs/best-practices-costs#
 
 ### Search by resource elements
 
-How to search specific resourceType by specific element: the following query find all women of age between 24 and 64.
+How to search specific resourceType by specific element: the following query finds all women of age between 24 and 64.
 
 ```sql
 WITH patients AS (SELECT
