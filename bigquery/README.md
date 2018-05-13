@@ -59,14 +59,24 @@ incurring any cost: https://cloud.google.com/bigquery/docs/best-practices-costs#
 
 ### Search by resource elements
 
-How to search specific resourceType by specific element
+How to search specific resourceType by specific element: the following query find all women of age between 24 and 64.
+
+```sql
+WITH patients AS (SELECT
+ id.value as id,
+ gender.value as gender,
+ DATE_DIFF(CURRENT_DATE(), EXTRACT(DATE
+   FROM
+     TIMESTAMP_MICROS(birthDate.valueUs)), YEAR) AS age
+FROM
+ `synthea.Patient`)
+SELECT * FROM patients WHERE age > 23 and age < 65 AND gender = "FEMALE"
+```
 
 ### Related resources
 
-How to represent references between resources
-
-How to search and retrieve related resources
+How to represent references between resources and how to search and retrieve related resources: this [FHIR BigQuery example](https://github.com/google/fhir/blob/master/examples/bigquery/conditions-by-gender.sql) illustrates the joining between `Conditions` and `Patient` tables using references.
 
 ### Analytic
 
-More complicated queries with aggregation etc
+More complicated queries with aggregation etc: this [FHIR BigQuery example](https://github.com/google/fhir/blob/master/examples/bigquery/glucose-quantiles.sql) illustrates quantiles and counts of the `Observations` table based on code criteria.
