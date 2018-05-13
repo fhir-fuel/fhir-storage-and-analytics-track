@@ -1,6 +1,5 @@
 set -o xtrace
 
-
 load_vs () {
     VS=$1
     echo "load $VS"
