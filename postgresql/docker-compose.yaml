@@ -5,6 +5,8 @@ services:
     container_name: pg
     ports:
       - "5777:5432"
+    volumes:
+       - .volumes:/data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_DB: synthea

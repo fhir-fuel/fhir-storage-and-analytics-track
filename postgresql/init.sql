@@ -6,9 +6,19 @@
 drop table synthea;
 create table synthea (
   id text primary key,
+  status text,
   data jsonb
 );
 
+---
+alter table synthea add column status text;
+
+---
+truncate synthea;
+
+---
+
+select count(*) from synthea;
 
 ---
 drop table resource;
@@ -52,34 +62,43 @@ CREATE TABLE IF NOT EXISTS Organization (id text primary key, txid bigint not nu
 CREATE TABLE IF NOT EXISTS AllergyIntolerance (id text primary key, txid bigint not null, ts timestamptz DEFAULT current_timestamp, resource_type text, status resource_status not null, resource jsonb not null);
 
 ---
-
-\set record `cat synthea/Abbott701_Norman373_77.json`
-
-insert into synthea (id, data)
-values ('Abbott701_Norman373_77.json', :'record');
-
----
 create extension pgcrypto
 
 ---
 truncate resource;
+---
 
+with batch as (
+  select * from synthea where status is null limit 100
+), updated as (
+  update synthea set status = 'processed'
+  where id in (select id from batch)
+  returning id 
+)
 insert into resource (id, resource_type, txid, resource, status)
 select
   coalesce(x.entry#>>'{resource,id}', gen_random_uuid()::text) as id,
   x.entry#>>'{resource,resourceType}',
-  0,
-  x.entry->'resource' as resource,
+  0, x.entry->'resource' as resource,
   'created'
   from (
-    select jsonb_array_elements(data->'entry') entry from synthea
+    select jsonb_array_elements(data->'entry') entry from batch
   ) x
 ON CONFLICT (id) DO  NOTHING
 ;
+
 ---
+-- update synthea set status = null;
+select count(*), status from synthea group by status
+
+
 select resource
 from resource
 limit 1
+
+---
+update resource
+set resource = replace(resource::text, 'urn:uuid:', '')::jsonb
 
 ---
 
@@ -331,3 +350,6 @@ from (
 
 
 ---
+
+truncate synthea;
+truncate resource;
