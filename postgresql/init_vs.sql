@@ -3,8 +3,8 @@ create extension pgcrypto
 ---
 CREATE TYPE resource_status AS ENUM ('created', 'updated', 'deleted', 'recreated');
 ---
-drop table synthea;
-create table synthea (
+drop table vss;
+create table vss (
 id text primary key,
 status text,
 data jsonb
@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS Concept
  status resource_status not null,
  resource jsonb not null);
 ---
-truncate table synthea
+truncate table vss
+
 ---
 truncate table concept
 ---
@@ -30,7 +31,14 @@ jsonb_build_object('valueset', replace(data#>>'{expansion, identifier}', 'http:/
 ||
 jsonb_array_elements(data#>'{expansion, contains}'),
 'created'
-from synthea
+from vss
+
 ---
-select resource from Concept limit 1
+select resource
+from Concept
+limit 10
+
 ---
+select distinct resource->>'valueset'
+from concept
+order by resource->>'valueset'

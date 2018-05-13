@@ -4,7 +4,7 @@ export PGPASSWORD=postgres
 export PGHOST=localhost
 export PGDATABASE=synthea
 
-psql -c 'truncate synthea'
+psql -c 'truncate vss'
 
 for f in vs/*.json; do
     echo "$f";
@@ -12,6 +12,6 @@ for f in vs/*.json; do
     echo "
     \set record \`cat \"$f\"\`
 
-    insert into synthea (id, data) values ('$f', :'record');
+    insert into vss (id, data) values ('$f', :'record');
 " | psql
 done

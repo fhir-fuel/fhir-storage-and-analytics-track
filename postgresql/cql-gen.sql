@@ -1,80 +1,139 @@
 ---
-
-\i h.psql
-
-with
-
-names (nm,gen) as (values
-('Vladimir', 'M'),
-('Edic', 'M'),
-('Ivan', 'M'),
-('Ignat','M'),
-('Olga','F'),
-('Alina','F'),
-('Elena','F'),
-('Andrey', 'M')),
-families (fm) as (values ('Ivanov'), ('Ignatov'), ('Andreev')),
-birth_years (by) as (values ('1950'), ('1960'), ('1970'), ('1980')),
-races (rc) as (values ('White'), ('Asian'), ('African'))
-
-select
-:o(
-  'resourceType', 'Patient',
-  'name', :a(:o('given', :a(nm), 'family', fm)),
-  'gender', gen,
-  'birthDate', by,
-  'race', rc
-)
-from names names, families, birth_years,races
-;
-
-
--- value tables
---  value, probability per 1000, meta
---  names
--- 'David', 5, {gender: 'M'} 
-
--- address = state + city + street + home + room => 1 or 2
--- birthdate = year + month + day => used 1000
-
+DROP TABLE cql;
+CREATE TABLE IF NOT EXISTS cql (
+  id text primary key,
+  row_number bigint,
+  resource jsonb not null
+);
 
 
 ---
-with
-_names (nm,gend, gen) as (values
-  ('Nikolai', 'M', 30),
-  ('Nikita', 'M', 50),
-  ('Albert', 'M', 5),
-  ('Ivan', 'M', 50),
-  ('Andrey', 'M', 70),
-  ('Edip', 'M', 2)
-),
-_families (fm, gen) as (values
-  ('Nikolaev',  5),
-  ('Kutis',  1),
-  ('Ivanov',  50),
-  ('Sundukov',  30),
-  ('Lisny',  30),
-  ('Efremov',  50)
-),
-names as (
-  select row_number() OVER (), nm from (
-    select * from (
-      select nm, generate_series(1, gen)
-      from _names
-    ) _ order by random()
-  ) _
-),
-families as (
-  select row_number() OVER (), fm from (
-    select * from (
-      select fm, generate_series(1, gen)
-      from _families
-    ) _ order by random()
-  ) _
+
+truncate cql;
+
+---
+
+\i h.psql
+
+with pts as (
+  insert into cql (row_number,id,resource)
+  select row_number() OVER (), id, resource from patient
+  where resource->>'gender' = 'female'
+  and age((resource->>'birthDate')::timestamp) between '12 years' and '64 years'
+  limit 30
+  returning *
+), encs as (
+  insert into cql (row_number, id,resource)
+  select row_number() OVER (), e.id, e.resource
+  from encounter e, patient p
+  where e.resource#>>'{subject,reference}' = p.id 
+  limit 30
+  returning *
+),  proc_codes as (
+  select row_number() OVER (), c.* from
+  (
+    select *
+    from concept
+    where resource->>'valueset' in ('2.16.840.1.113883.3.464.1004.1208', '2.16.840.1.113883.3.464.1004.1208.23')
+    order by random()
+  ) c
+),  procs as (
+  insert into cql (id,resource)
+  select :uuid,
+  :o(
+      'code', :o(
+          'coding', :a(
+                 :o('code', pc.resource->>'code',
+                    'system', pc.resource->>'system',
+                    'display', pc.resource->>'display')
+          )
+      ),
+      'status', 'completed',
+      -- 'context', :o('reference', p.id),
+      'subject', :o('reference', p.id),
+      'resourceType', 'Procedure',
+      'performedDateTime', '2018-02-23T05,08,47+03,00'
+  ) from pts p
+  join proc_codes pc on pc.row_number = p.row_number 
+  returning *
+) , diag as (
+  insert into cql (id,resource)
+  select  :uuid,
+  :o('resourceType', 'DiagnosticReport',
+    'status', 'final',
+    'code', :o(
+      'coding', :a(
+        :o('code', pc.resource->>'code',
+        'system', pc.resource->>'system',
+        'display', pc.resource->>'display')
+      )
+    ),
+    'subject', :o( 'reference', p.id ),
+    'issued', '2013-05-15T19,32,52+01,00',
+    'conclusion', 'Core lab'
+  )
+  from pts p
+  join proc_codes pc on p.row_number = pc.row_number
+  returning *
+), obs as (
+  insert into cql (id,resource)
+  select  :uuid,
+  :o('code', :o(
+         'text', 'Sexual orientation',
+         'coding', :a(
+            :o('code', pc.resource->>'code',
+               'system', pc.resource->>'system',
+               'display', pc.resource->>'display')
+         )
+     ),
+     'value', :o(
+         'string', 'heterosexual'
+     ),
+     'issued', '2014-03-28T19,21,30.949+04,00',
+     'status', 'final',
+     -- 'context', :o('reference', e.id),
+     'subject', :o('reference', p.id),
+     'valueString', 'heterosexual',
+     'resourceType', 'Observation',
+     'effectiveDateTime', '2014-03-28T19,21,30+04,00'
+ )
+ from pts p
+ join proc_codes pc on p.row_number = pc.row_number
+ returning *
+
 )
+select resource from obs;
+---
+insert into cql (id,resource)
+select id,resource || '{"resourceType":"Concept"}' from concept
+;
 
-select * from names
-join families using (row_number)
+---
+\i h.psql
+
+COPY (select resource || :o('id', id) from cql)
+TO '/data/cql.csv';
+
+-- select * from obs
+-- ;
 
 
+---
+
+insert into procedure (id,txid,status,resource)
+select id,0, 'created', resource from cql
+where resource->>'resourceType' = 'Procedure'
+
+---
+
+insert into diagnosticreport (id,txid,status,resource)
+select id,0, 'created', resource from cql
+where resource->>'resourceType' = 'DiagnosticReport'
+
+---
+
+insert into observation (id,txid,status,resource)
+select id,0, 'created', resource from cql
+where resource->>'resourceType' = 'Observation'
+
+---
